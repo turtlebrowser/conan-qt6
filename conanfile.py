@@ -170,8 +170,7 @@ class QtConan(ConanFile):
 
         for m in self._submodules:
             if m not in self._get_module_tree:
-                if m in self.options:
-                    del self.options[m]
+                delattr(self.options, m)
 
     @property
     def _minimum_compilers_version(self):
