@@ -136,6 +136,7 @@ class QtConan(ConanFile):
         config = configparser.ConfigParser()
         config.read(os.path.join(self.recipe_folder, "qtmodules%s.conf" % self.version))
         self._submodules_tree = {}
+        self.output.success(self.version)
         assert config.sections()
         for s in config.sections():
             section = str(s)
