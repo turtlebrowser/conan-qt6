@@ -1,0 +1,35 @@
+name: Publish Qt recipe to JFrog
+
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '30 23 * * 2'
+
+  push:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: JFrog
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+
+      - name: Add conan jfrog remote
+        run: conan remote add jfrog https://turtlebrowser.jfrog.io/artifactory/api/conan/conan
+
+      - name: Authenticate with jfrog
+        run: conan user -p ${{ secrets.JFROG_PASSWORD }} -r jfrog ${{ secrets.JFROG_USER }}
+
+      - name: Install conan-qt locally
+        run: conan export . qt/6.x.x@turtlebrowser/test
+
+      - name: Upload the Qt recipe to jfrog
+        run: conan upload qt/6.x.x@turtlebrowser/test --confirm -r jfrog
