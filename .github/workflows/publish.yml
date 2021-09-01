@@ -29,6 +29,12 @@ jobs:
         run: conan user -p ${{ secrets.JFROG_PASSWORD }} -r jfrog ${{ secrets.JFROG_USER }}
 
       - name: Install conan-qt locally
+        run: conan export . qt/6.1.2@turtlebrowser/test
+
+      - name: Upload the Qt recipe to jfrog
+        run: conan upload qt/6.1.2@turtlebrowser/test --confirm -r jfrog
+
+      - name: Install conan-qt locally
         run: conan export . qt/6.1.3@turtlebrowser/test
 
       - name: Upload the Qt recipe to jfrog
